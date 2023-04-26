@@ -3,22 +3,28 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { appWithTranslation } from 'next-i18next';
 import type { AppProps } from 'next/app';
-import { Inter } from 'next/font/google';
+
+import { LayoutContextProvider } from '@/utils/context/LayoutContext';
+
+import Header from '@/components/Layout/Header';
 
 import '@/styles/globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 function App({ Component, pageProps }: AppProps<{}>) {
   const queryClient = new QueryClient();
 
   return (
-    <div className={inter.className}>
+    <LayoutContextProvider>
       <Toaster />
       <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
+        <div className="flex min-h-screen flex-col">
+          <Header />
+          <main className="flex flex-1">
+            <Component {...pageProps} />
+          </main>
+        </div>
       </QueryClientProvider>
-    </div>
+    </LayoutContextProvider>
   );
 }
 

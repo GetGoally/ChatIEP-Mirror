@@ -30,6 +30,9 @@ interface Props {
 export const ChatMessage: FC<Props> = memo(({ message, messageIndex }) => {
   const { t } = useTranslation('chat');
 
+  console.log(message);
+  
+
   const {
     state: { selectedConversation, conversations },
     dispatch: homeDispatch,

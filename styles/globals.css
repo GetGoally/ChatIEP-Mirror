@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes blink {
+
+  from,
+  to {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
 ::-webkit-scrollbar-track {
   background-color: transparent;
 }
@@ -40,4 +52,197 @@ html {
 
 pre:has(div.codeblock) {
   padding: 0;
+}
+
+
+@layer base {
+  html {
+    @apply font-rubik text-black;
+  }
+
+  h1,
+  .h1 {
+    @apply font-semibold text-3xl leading-[1.31];
+  }
+
+  h3 {
+    @apply font-normal text-xl leading-[1.19];
+    text-decoration-thickness: 1.5px;
+    text-underline-offset: 2px;
+  }
+
+  p,
+  li {
+    @apply font-normal text-base leading-[1.3];
+  }
+
+  @media screen and (min-width: 1024px) {
+
+    h1,
+    .h1 {
+      @apply font-bold text-[40px] leading-[1.175];
+    }
+
+    p,
+    li {
+      @apply text-xl;
+    }
+
+    h3 {
+      @apply text-[26px];
+    }
+  }
+}
+
+@layer utilities {
+  .header-shadow {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .hamburger-transition {
+    transition: all 0.3s ease;
+  }
+
+  .hamburger-transition span {
+    transition: background 0s 0.15s;
+  }
+
+  .hamburger-transition span:before {
+    transition: all 0.3s ease;
+    transition-duration: 0.15s, 0.15s;
+    transition-delay: 0.15s, 0s;
+    transition-property: top, transform, background, -webkit-transform;
+  }
+
+  .hamburger-transition.open span:before {
+    transition-delay: 0s, 0.15s;
+  }
+
+  .hamburger-transition span::after {
+    transition: all 0.3s ease;
+    transition-duration: 0.15s, 0.15s;
+    transition-delay: 0.15s, 0s;
+    transition-property: bottom, transform, background, -webkit-transform;
+  }
+
+  .hamburger-transition.open span:after {
+    transition-delay: 0s, 0.15s;
+  }
+
+  .menu-wrapper-transition {
+    transition: all 0.3s ease;
+  }
+
+  .higlight-menu-item::before {
+    width: calc(100% - 12px);
+  }
+
+  .navigation-sub-link::before {
+    content: '●';
+    color: #ffd559;
+    padding-right: 8px;
+    font-size: 10px;
+  }
+
+  .ruler-grid {
+    background-size: 80px 80px;
+    background-image:
+      linear-gradient(to right, #D8CFF8 2px, transparent 2px),
+      linear-gradient(to bottom, #D8CFF8 2px, transparent 2px);
+    background-position: center;
+  }
+
+  .ruler-grid-light {
+    background-size: 80px 80px;
+    background-image:
+      linear-gradient(to right, rgba(110, 73, 210, 0.1) 2px, transparent 2px),
+      linear-gradient(to bottom, rgba(110, 73, 210, 0.1) 2px, transparent 2px);
+    background-position: center;
+  }
+
+  .button-shadow {
+    box-shadow: 4px 4px 0px rgba(37, 54, 70, 0.6);
+  }
+
+  .bg-trasparent {
+    background: transparent;
+  }
+
+  .dark .dark\:bg-transparent {
+    background: transparent;
+  }
+
+  .blink::after {
+    content: "";
+    width: 6px;
+    height: 13px;
+    margin-left: 8px;
+    background: #3A3D40;
+    display: inline-block;
+    animation: 1.5s blink step-end infinite;
+  }
+
+  .promt-shadow {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .modal-shadow {
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .range {
+    width: 100%;
+    background: transparent;
+    appearance: none;
+    transition: background 450ms ease-in;
+    height: 4px;
+    border-radius: 5px;    
+  }
+
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+  }
+
+  .range:focus {
+    outline: none;
+  }
+
+  .range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    margin-top: 0;
+  }
+
+  .range::-moz-range-thumb {
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+  }
+
+  @media screen and (min-width: 1024px) {
+    .sub-menu-shadow {
+      box-shadow: 0 0 8px 0 rgb(0 0 0 / 50%);
+    }
+
+    .higlight-menu-item::before {
+      width: 100%;
+    }
+
+    .navigation-sub-link::before {
+      padding-right: 8px;
+      font-size: 12px;
+      position: relative;
+      top: -2px;
+    }
+  }
 }
