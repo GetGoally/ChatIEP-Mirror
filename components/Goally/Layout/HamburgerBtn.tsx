@@ -1,13 +1,13 @@
 import React from "react";
 import { twMerge } from "tailwind-merge";
 
-import { useLayoutContext } from "@/utils/context/LayoutContext";
+import { useAppContext } from "@/utils/context/AppContext";
 
 const HamburgerBtn = () => {
   const {
     isMenuOpen,
     actions: { toggleMenu },
-  } = useLayoutContext();
+  } = useAppContext();
 
   return (
     <button

@@ -1,3 +1,59 @@
+@font-face {
+  font-family: "Rubik";
+  src: url("/fonts/Rubik/static/Rubik-Regular.ttf");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rubik";
+  src: url("/fonts/Rubik/static/Rubik-Medium.ttf");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rubik";
+  src: url("/fonts/Rubik/static/Rubik-SemiBold.ttf");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Rubik";
+  src: url("/fonts/Rubik/static/Rubik-Bold.ttf");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/static/Inter-Regular.ttf");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/static/Inter-Medium.ttf");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Inter";
+  src: url("/fonts/Inter/static/Inter-Bold.ttf");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -196,7 +252,7 @@ pre:has(div.codeblock) {
     appearance: none;
     transition: background 450ms ease-in;
     height: 4px;
-    border-radius: 5px;    
+    border-radius: 5px;
   }
 
   .range::-webkit-slider-thumb {
@@ -227,6 +283,10 @@ pre:has(div.codeblock) {
     border-radius: 50%;
     background: white;
     cursor: pointer;
+  }
+
+  .chat-input {
+    box-shadow: -1px -1px 3px rgba(0, 0, 0, 0.1), 1px 1px 3px rgba(0, 0, 0, 0.1);
   }
 
   @media screen and (min-width: 1024px) {

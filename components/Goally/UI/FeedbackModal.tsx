@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
-import Button from '@/components/UI/Button';
+import Button from '@/components/Goally/UI/Button';
 
 import CloseIcon from '@/assets/close-icon.svg';
 

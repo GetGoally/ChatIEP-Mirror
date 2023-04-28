@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { twMerge } from 'tailwind-merge';
 
-import { useLayoutContext } from '@/utils/context/LayoutContext';
+import { useAppContext } from '@/utils/context/AppContext';
 import Link from 'next/link';
 
 const Navigation = () => {
-  const { isMenuOpen } = useLayoutContext();
+  const { isMenuOpen } = useAppContext();
   const [subMenuOpen, setSubMenuOpen] = useState(-1);
   const toggleMenu = (x) => setSubMenuOpen(subMenuOpen === x ? -1 : x);
   const [windowSize, setWindowSize] = useState({

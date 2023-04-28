@@ -1,107 +1,108 @@
-// import { useRef, useState } from 'react';
-import { useState } from 'react';
+import { useEffect } from 'react';
 
-import { Inter } from 'next/font/google';
+import { useRouter } from 'next/router';
 
-import Container from '@/components/Layout/Container';
-import Button from '@/components/UI/Button';
-import ChatMessage from '@/components/UI/ChatMessage';
-import FeedbackModal from '@/components/UI/FeedbackModal';
+import { useChatContext } from '@/utils/context/ChatContext';
 
-const inter = Inter({ subsets: ['latin'] });
+import ChatInput from '@/components/Goally/Chat/ChatInput';
+import ChatLoader from '@/components/Goally/Chat/ChatLoader';
+import ChatMessage from '@/components/Goally/Chat/ChatMessage';
+import DefaultPrompts from '@/components/Goally/Chat/DefaultPrompts';
+import Sidebar from '@/components/Goally/Chat/Sidebar';
+import Container from '@/components/Goally/Layout/Container';
+
+import { v4 as uuidv4 } from 'uuid';
 
 const Chat = () => {
-  const [showModal, setShowModal] = useState(false);
+  const router = useRouter();
+
+  const {
+    error,
+    s3_file_path,
+    loaded,
+    messages,
+    loading,
+    haveFirstResponse,
+    haveSecondResponse,
+    createIndex,
+    sendMessage,
+  } = useChatContext();
+
+  // Disable page until s3_file not avaiable
+  useEffect(() => {
+    if (!s3_file_path) {
+      router.push('/');
+      return;
+    }
+
+    // Creare Index Request
+    createIndex();
+  }, []);
+
   return (
     <div
-      className={`ruler-grid-light w-full overflow-hidden bg-white ${inter.className}`}
+      className={`ruler-grid-light w-full overflow-hidden bg-white font-inter`}
     >
       <Container className=" flex h-full flex-col lg:flex-row ">
-        <div className="">
+        <div className="w-full">
           <ChatMessage
             message={{
+              id: uuidv4(),
               role: 'system',
               content: 'Reading and interpreting this IEP',
             }}
           />
           <ChatMessage
             message={{
+              id: uuidv4(),
               role: 'assistant',
               content:
-                "To write an article, follow these steps: \n 1. **Choose a topic**: Pick a subject that you are interested in or knowledgeable about.\n2. **Research**: Gather information and supporting facts about your topic from trustworthy sources. Take notes and organize your findings.\n3. **Define your audience**: Determine who you are writing for and what their interests are. This will guide your writing style and tone.\n4. **Outline**: Create an outline to organize your thoughts and ensure logical flow. Break down your article into sections, such as introduction, main points, and conclusion.\n5. **Write the introduction**: Grab your readers' attention with a strong opening that introduces your topic and provides context.\n6. **Develop your main points**: For each section of your outline, write a few paragraphs. Use a clear, concise, and informative writing style. Include supporting evidence and facts, and connect your ideas in a logical sequence.",
+                'Based on this IEP, here are some of the things this student is struggling with: \n - [orem ipsum dolor sit amet, consectetur adipiscing elit. Nunc arcu augue, porttitor ut tristique aliquet, imperdiet]. \n - [orem ipsum dolor sit amet, consectetur adipiscing elit. Nunc arcu augue, porttitor ut tristique aliquet, imperdiet]. \n - [orem ipsum dolor sit amet, consectetur adipiscing elit. Nunc arcu augue, porttitor ut tristique aliquet, imperdiet].',
             }}
           />
-          <ChatMessage
-            message={{
-              role: 'user',
-              content: 'lorem',
-            }}
-          />
+          {messages.map(({ id, content, role }) => {
+            return (
+              <ChatMessage
+                key={id}
+                message={{
+                  id,
+                  role,
+                  content,
+                }}
+              />
+            );
+          })}
 
-          <div className="my-8 pl-[62px] md:pl-[82px] md:pr-5">
-            <div className="flex max-w-[928px] flex-col md:flex-row md:gap-2 lg:gap-[25px]">
-              <Button
-                label="submit promt"
-                onClick={() => {}}
-                className="mt-3 first-of-type:mt-0 md:mt-0"
-                variant="yellow"
-              >
-                How can I help my child start and finish homework?
-              </Button>
-              <Button
-                label="submit promt"
-                onClick={() => {}}
-                className="mt-3 first-of-type:mt-0 md:mt-0"
-                variant="yellow"
-              >
-                How can I help my kid make friends at school?
-              </Button>
-              <Button
-                label="submit promt"
-                onClick={() => {}}
-                className="mt-3 first-of-type:mt-0 md:mt-0"
-                variant="yellow"
-              >
-                What could I do to motivate my kid when they don’t want to do
-                it?
-              </Button>
-              <Button
-                label="submit promt"
-                onClick={() => {}}
-                className="mt-3 first-of-type:mt-0 md:mt-0"
-                variant="yellow"
-              >
-                What behavior skills does my kid need to improve the most?
-              </Button>
-              <Button
-                label="submit promt"
-                onClick={() => {}}
-                className="mt-3 first-of-type:mt-0 md:mt-0"
-                variant="yellow"
-              >
-                What behavior skills does my kid need to improve the most?
-              </Button>
+          {loading && <ChatLoader />}
+
+          {loaded && !haveSecondResponse && (
+            <div className="my-8 pl-[62px] md:pl-[82px] md:pr-5">
+              <DefaultPrompts
+                onClick={(msg) => {
+                  sendMessage(msg);
+                }}
+                disabled={loading}
+              />
             </div>
-          </div>
+          )}
+          {haveFirstResponse && (
+            <ChatInput
+              onSend={(msg) => {
+                sendMessage(msg);
+              }}
+            />
+          )}
+
+          {error && (
+            <div className="my-8 pl-[62px] md:pl-[82px] md:pr-5">
+              <p className="text-red">{error}</p>
+            </div>
+          )}
         </div>
         <div className="relative mt-auto flex items-center justify-center after:absolute after:-left-[50%] after:h-full after:w-[150vw] after:bg-purple/50 md:mt-0 lg:min-w-[200px] lg:items-end lg:justify-end  lg:after:left-0 xl:min-w-[250px]   ">
-          <Button
-            label="Give feedback"
-            onClick={() => {
-              setShowModal(true);
-            }}
-            className="relative z-10 my-8"
-            variant="yellow"
-          >
-            Did ChatIEP help you?
-            <br />
-            Give feedback{' '}
-            <span className="underline underline-offset-2">here</span>
-          </Button>
+          {haveFirstResponse && <Sidebar />}
         </div>
       </Container>
-
-      {showModal && <FeedbackModal onClose={() => setShowModal(false)} />}
     </div>
   );
 };

@@ -16,3 +16,23 @@ export const OPENAI_ORGANIZATION =
 
 export const AZURE_DEPLOYMENT_ID =
   process.env.AZURE_DEPLOYMENT_ID || '';
+
+export const MAX_ALLOWED_SIZE_MB = 30;
+
+export const ERROR_FORMAT = 'wrong_format';
+export const ERROR_SIZE = 'max_size';
+export const ERROR_AGREE = 'missed_agree';
+export const ERROR_REQUIRED = 'missed_file';
+export const ERROR_REQUEST = 'failed_request';
+
+
+export const DEFAULT_PROMTS = [
+  'How can I help my child start and finish homework?',
+  'How can I help my kid make friends at school?',
+  'What could I do to motivate my kid when they don’t want to do it?',
+  'What behavior skills does my kid need to improve the most?',
+  'What behavior skills does my kid need to improve the most?'
+];
+
+export const CHAT_RESPONSE_STATUS_DONE = 'done';
+export const CHAT_RESPONSE_STATUS_PROCESSING = 'processing';

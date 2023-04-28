@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 
 import { Message } from '@/types/goally-chat';
 
-import { CodeBlock } from '../../Markdown/CodeBlock';
-import { MemoizedReactMarkdown } from '../../Markdown/MemoizedReactMarkdown';
+import { CodeBlock } from '../../../Markdown/CodeBlock';
+import { MemoizedReactMarkdown } from '../../../Markdown/MemoizedReactMarkdown';
 
 import rehypeMathjax from 'rehype-mathjax';
 import remarkGfm from 'remark-gfm';

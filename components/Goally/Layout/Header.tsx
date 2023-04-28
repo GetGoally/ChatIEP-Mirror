@@ -1,14 +1,15 @@
 import React from 'react';
 
-import Container from '@/components/Layout/Container';
-import HamburgerBtn from '@/components/Layout/HamburgerBtn';
-import Navigation from '@/components/Layout/Navigation';
+import Container from '@/components/Goally/Layout/Container';
+import HamburgerBtn from '@/components/Goally/Layout/HamburgerBtn';
+import Logo from '@/components/Goally/Layout/Logo';
+import Navigation from '@/components/Goally/Layout/Navigation';
+
 import HandsIcon from '@/assets/hands.svg';
-import Logo from '@/components/Layout/Logo';
 
 const Header: React.FC = () => {
   return (
-    <header className="header-shadow relative z-20 w-full bg-white">
+    <header className="header-shadow fixed z-20 h-[100px] w-full bg-white lg:h-[130px]">
       <Container className="lg:flex lg:items-center lg:py-[15px]">
         <Logo className="shrink-0 basis-[23%]" />
         <div className="relative z-50 flex items-center justify-between py-[15px] lg:order-1 lg:shrink-0 lg:basis-[23%] lg:justify-end lg:p-0">

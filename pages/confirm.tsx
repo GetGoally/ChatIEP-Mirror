@@ -1,8 +1,8 @@
 import { useState, useRef, ChangeEvent } from 'react';
 
 import UploadIcon from '@/assets/upload.svg';
-import Button from '@/components/UI/Button';
-import CheckBox from '@/components/UI/Checkbox';
+import Button from '@/components/Goally/UI/Button';
+import CheckBox from '@/components/Goally/UI/Checkbox';
 
 export default function Confirm() {
   const [email, setEmail] = useState('');

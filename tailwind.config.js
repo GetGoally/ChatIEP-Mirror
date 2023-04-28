@@ -10,7 +10,11 @@ module.exports = {
   ],
   darkMode: 'class',
   theme: {
-    colors: {
+    colors: ({ colors }) => ({
+      inherit: colors.inherit,
+      current: colors.current,
+      initial: colors.initial,
+      transparent: colors.transparent,
       black: '#000',
       dark: '#253646',
       white: '#fff',
@@ -24,10 +28,11 @@ module.exports = {
       red: '#FF0000',
       grey: '#BDBDBD',
       light_grey: '#F2F2F2',
-    },
+    }),
     extend: {
       fontFamily: {
         rubik: ['Rubik', ...defaultTheme.fontFamily.sans],
+        inter: ['Inter', ...defaultTheme.fontFamily.sans],
       },
       typography: ({ theme }) => {
         return {
