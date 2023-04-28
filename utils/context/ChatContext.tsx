@@ -111,7 +111,9 @@ const chatReducer = (state: State, action: Action) => {
       return {
         ...state,
         messages: messages,
-        haveFirstResponse: action.payload.role === 'assistant',
+        haveFirstResponse: state.haveFirstResponse
+          ? true
+          : action.payload.role === 'assistant',
         haveSecondResponse: messagesFromServer.length >= 2,
       };
     }
