@@ -19,6 +19,7 @@ const Chat = () => {
   const {
     error,
     s3_file_path,
+    index,
     loaded,
     messages,
     loading,
@@ -35,8 +36,13 @@ const Chat = () => {
       return;
     }
 
+    console.log(222);
+    
+
     // Creare Index Request
-    createIndex();
+    if (!index) {
+      createIndex();
+    }
   }, []);
 
   return (
