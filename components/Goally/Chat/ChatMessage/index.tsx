@@ -8,9 +8,10 @@ import UserContent from './UserContent';
 
 type Props = {
   message: Message;
+  loading: boolean;
 };
 
-const ChatMessage: React.FC<Props> = ({ message }) => {
+const ChatMessage: React.FC<Props> = ({ message, loading }) => {
   return (
     <div
       className="even:relative even:after:absolute even:after:top-0 even:after:-left-[50%] even:after:h-full even:after:w-[150vw] even:after:bg-purple/50 lg:even:after:left-auto lg:even:after:right-0"
@@ -20,7 +21,7 @@ const ChatMessage: React.FC<Props> = ({ message }) => {
         <Avatar />
         <div className="relative w-full pt-[15px] md:pr-6">
           {message.role === 'user' || message.role === 'system' ? (
-            <UserContent message={message} />
+            <UserContent message={message} loading={loading} />
           ) : (
             <BotContent message={message} />
           )}

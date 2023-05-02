@@ -36,9 +36,8 @@ const ErrorMessage: React.FC<ErrorProps> = ({ type }) => {
     case ERROR_REQUEST:
       return (
         <p>
-          Something go wrong.
-          <br />
-          Please try later.
+          Something went wrong. <br />
+          Try later.
         </p>
       );
     default:

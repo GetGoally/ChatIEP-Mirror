@@ -17,7 +17,7 @@ export const OPENAI_ORGANIZATION =
 export const AZURE_DEPLOYMENT_ID =
   process.env.AZURE_DEPLOYMENT_ID || '';
 
-export const MAX_ALLOWED_SIZE_MB = 30;
+export const MAX_ALLOWED_SIZE_MB = 60;
 
 export const ERROR_FORMAT = 'wrong_format';
 export const ERROR_SIZE = 'max_size';
@@ -25,6 +25,10 @@ export const ERROR_AGREE = 'missed_agree';
 export const ERROR_REQUIRED = 'missed_file';
 export const ERROR_REQUEST = 'failed_request';
 
+
+export const FIRST_PROMT = "This document is an individualized learning plan for a student. Based on this IEP, what are things this student is struggling with or needs help with? Give me two or three bullet points.";
+
+export const CHAT_RESPONSE_ERROR_MESSAGE = "We have a failure from our server. Maybe Antarctica got too hot. Please try again later.";
 
 export const DEFAULT_PROMTS = [
   'How can I help my child start and finish homework?',

@@ -94,78 +94,100 @@ export default function Home() {
   let arcLength = 2 * 3.14 * 76;
   let arcOffset = arcLength * ((100 - progress) / 100);
 
+  const renderCentralBlock = () => {
+    if (loading) {
+      return (
+        <div className="flex flex-col items-center justify-center">
+          <div className="relative h-[160px] w-[160px] ">
+            <span className="absolute left-2/4 top-2/4 -translate-x-2/4 -translate-y-2/4 text-[33px] font-medium">
+              {progress}%
+            </span>
+            <svg className="svg-indicator -rotate-90" width={160} height={160}>
+              <circle
+                className="svg-indicator-track"
+                cx={80}
+                cy={80}
+                r={76}
+                strokeWidth={4}
+                fill="transparent"
+                stroke="#000"
+              />
+              <circle
+                className="svg-indicator-indication"
+                strokeDasharray={arcLength}
+                strokeDashoffset={arcOffset}
+                cx={80}
+                cy={80}
+                r={76}
+                strokeWidth={5}
+                fill="transparent"
+                stroke="#49B0AB"
+                strokeLinecap="round"
+              />
+            </svg>
+          </div>
+
+          <p className="mt-3">Uploading to Goally’s Antarctica server...</p>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <>
+          <div className="order-1 basis-1/3 px-1 pt-5 text-center text-red md:pt-0">
+            <ErrorMessage type={error} />
+          </div>
+          <div
+            className="flex basis-1/3 cursor-pointer flex-col items-center md:order-2"
+            onClick={handleChooseFile}
+          >
+            <UploadIcon />
+            <span className="mt-3 inline-block whitespace-nowrap text-xl leading-[1.19] text-blue underline md:text-[26px]">
+              {file ? file.name : 'Select File'}
+            </span>
+            <input
+              type="file"
+              accept="application/pdf"
+              ref={inputRef}
+              onChange={handleOnChange}
+              className="hidden"
+            />
+          </div>
+          <div className="order-3 basis-1/3"></div>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <div
+          className="flex  cursor-pointer flex-col items-center"
+          onClick={handleChooseFile}
+        >
+          <UploadIcon />
+          <span className="mt-3 inline-block text-xl leading-[1.19] text-blue underline md:text-[26px]">
+            {file ? file.name : 'Select File'}
+          </span>
+          <input
+            type="file"
+            accept="application/pdf"
+            ref={inputRef}
+            onChange={handleOnChange}
+            className="hidden"
+          />
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="ruler-grid w-full bg-purple px-5 py-7 lg:py-11">
       <div className="mx-auto w-full max-w-[760px] text-center">
         <h1>Chat IEP</h1>
         <p>Make sense of your kid’s individualized education plan</p>
         <div className="mt-5 flex min-h-[250px]  flex-col items-center justify-center rounded-[30px] border-2 border-lime bg-white py-7 md:flex-row">
-          {loading ? (
-            <div className="flex flex-col items-center justify-center">
-              <div className="relative h-[160px] w-[160px] ">
-                <span className="absolute left-2/4 top-2/4 -translate-x-2/4 -translate-y-2/4 text-[33px] font-medium">
-                  {progress}%
-                </span>
-                <svg
-                  className="svg-indicator -rotate-90"
-                  width={160}
-                  height={160}
-                >
-                  <circle
-                    className="svg-indicator-track"
-                    cx={80}
-                    cy={80}
-                    r={76}
-                    strokeWidth={4}
-                    fill="transparent"
-                    stroke="#000"
-                  />
-                  <circle
-                    className="svg-indicator-indication"
-                    strokeDasharray={arcLength}
-                    strokeDashoffset={arcOffset}
-                    cx={80}
-                    cy={80}
-                    r={76}
-                    strokeWidth={5}
-                    fill="transparent"
-                    stroke="#49B0AB"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </div>
-
-              <p className="mt-3">Uploading to Goally’s Antarctica server...</p>
-            </div>
-          ) : (
-            <>
-              <div className="order-1 basis-1/3 px-1 pt-5 text-center text-red md:pt-0">
-                {error && <ErrorMessage type={error} />}
-              </div>
-              <div
-                className="flex basis-1/3 cursor-pointer flex-col items-center md:order-2"
-                onClick={handleChooseFile}
-              >
-                <UploadIcon />
-                <span className="mt-3 inline-block text-[26px] leading-[1.19] text-blue underline">
-                  Select File
-                </span>
-                <input
-                  type="file"
-                  accept="application/pdf"
-                  ref={inputRef}
-                  onChange={handleOnChange}
-                  className="hidden"
-                />
-                {file && (
-                  <div className="mt-5 p-2 text-blue underline   underline-offset-4">
-                    {file.name}
-                  </div>
-                )}
-              </div>
-              <div className="order-3 basis-1/3"></div>
-            </>
-          )}
+          {renderCentralBlock()}
         </div>
         {!loading && (
           <>

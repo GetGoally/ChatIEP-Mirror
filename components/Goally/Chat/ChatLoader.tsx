@@ -1,5 +1,4 @@
-import { IconDots } from '@tabler/icons-react';
-import React, { useState } from 'react';
+import React from 'react';
 
 import Avatar from './ChatMessage/Avatar';
 
@@ -13,9 +12,7 @@ const ChatLoader: React.FC<Props> = (props) => {
     >
       <div className="group relative z-10 flex gap-3 py-6 md:gap-8 md:pt-4 md:pb-[18px]">
         <Avatar />
-        <div className="relative w-full pt-[15px] md:pr-6">
-          <IconDots className="animate-pulse" />
-        </div>
+        <div className="blink relative w-full pt-[15px] md:pr-6" />
       </div>
     </div>
   );

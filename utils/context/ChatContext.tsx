@@ -1,8 +1,13 @@
-import React, { createContext, useContext, useReducer } from 'react';
+import React, { createContext, useContext, useEffect, useReducer } from 'react';
 
 import { Message } from '@/types/goally-chat';
 
-import { CHAT_RESPONSE_STATUS_DONE } from '../app/const';
+import {
+  CHAT_RESPONSE_ERROR_MESSAGE,
+  CHAT_RESPONSE_STATUS_DONE,
+  DEFAULT_PROMTS,
+  FIRST_PROMT,
+} from '../app/const';
 
 import { v4 as uuidv4 } from 'uuid';
 
@@ -14,8 +19,8 @@ interface ChatContextType {
   messages: Message[];
   loading: boolean;
   messageIsStreaming: boolean;
-  haveFirstResponse: boolean;
-  haveSecondResponse: boolean;
+  showDefaultPromt: boolean;
+  showInputBar: boolean;
   setS3Path: (value: string) => void;
   setError: (value: string) => void;
   sendMessage: (promt: string) => void;
@@ -34,8 +39,8 @@ type State = {
   messages: Message[];
   loading: boolean;
   messageIsStreaming: boolean;
-  haveFirstResponse: boolean;
-  haveSecondResponse: boolean;
+  showDefaultPromt: boolean;
+  showInputBar: boolean;
 };
 
 enum ActionKind {
@@ -46,7 +51,7 @@ enum ActionKind {
   AddMessage = 'ADD_MESSAGE',
   SetLoading = 'SET_LOADING',
   SetIsStrimming = 'SET_IS_STRIMMING',
-  SetHaveFirstResponse = 'SET_HAVE_FIRST_RESPONSE',
+  ToggleDefaultPromt = 'TOGGLE_DEFAULT_PROMT',
 }
 
 type Action = {
@@ -62,8 +67,8 @@ const defaultState: State = {
   messages: [],
   loading: false,
   messageIsStreaming: false,
-  haveFirstResponse: false,
-  haveSecondResponse: false,
+  showDefaultPromt: false,
+  showInputBar: false,
 };
 
 export const ChatContext = createContext<ChatContextType>(null as any);
@@ -88,12 +93,6 @@ const chatReducer = (state: State, action: Action) => {
         index: action.payload,
       };
     }
-    case ActionKind.SetHaveFirstResponse: {
-      return {
-        ...state,
-        haveFirstResponse: true,
-      };
-    }
     case ActionKind.SetLoaded: {
       return {
         ...state,
@@ -104,17 +103,22 @@ const chatReducer = (state: State, action: Action) => {
       const messages = [...state.messages];
       messages.push(action.payload);
 
-      const messagesFromServer = messages.filter((message) => {
-        return message.role === 'assistant';
+      const lastMessage = state.messages[state.messages.length - 1];
+      const userMessages = messages.filter((msg) => {
+        return msg.role === 'user';
       });
 
       return {
         ...state,
         messages: messages,
-        haveFirstResponse: state.haveFirstResponse
-          ? true
-          : action.payload.role === 'assistant',
-        haveSecondResponse: messagesFromServer.length >= 2,
+        // we need show user input after using first default promt
+        showInputBar:
+          state.showInputBar === true
+            ? true
+            : DEFAULT_PROMTS.includes(lastMessage?.content),
+        // we need to hide default promts after user submit more then 2 promts
+        showDefaultPromt:
+          userMessages.length >= 3 ? false : state.showDefaultPromt,
       };
     }
     case ActionKind.SetLoading: {
@@ -127,6 +131,12 @@ const chatReducer = (state: State, action: Action) => {
       return {
         ...state,
         messageIsStreaming: action.payload,
+      };
+    }
+    case ActionKind.ToggleDefaultPromt: {
+      return {
+        ...state,
+        showDefaultPromt: action.payload,
       };
     }
     default:
@@ -168,7 +178,7 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
       );
 
       if (!request.ok) {
-        throw new Error('Something go wrong. Please try later.');
+        throw new Error(CHAT_RESPONSE_ERROR_MESSAGE);
       }
 
       const response = await request.json();
@@ -183,7 +193,7 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
           payload: null,
         });
       } else {
-        throw new Error('Something go wrong. Please try later.');
+        throw new Error(CHAT_RESPONSE_ERROR_MESSAGE);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -235,7 +245,7 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
       );
 
       if (!request.ok) {
-        throw new Error('Something go wrong. Please try later.');
+        throw new Error(CHAT_RESPONSE_ERROR_MESSAGE);
       }
 
       // const data = request.body;
@@ -283,7 +293,11 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
             content: response.answer,
           },
         });
+
+        return true;
       }
+
+      return false;
     } catch (error) {
       if (error instanceof Error) {
         dispatchAction({
@@ -291,6 +305,8 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
           payload: error.message,
         });
       }
+
+      return false;
     } finally {
       dispatchAction({
         type: ActionKind.SetLoading,
@@ -304,6 +320,17 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    if (state.index) {
+      sendMessageHandler(FIRST_PROMT).then((res) => {
+        dispatchAction({
+          type: ActionKind.ToggleDefaultPromt,
+          payload: res,
+        });
+      });
+    }
+  }, [state.index]);
+
   return (
     <ChatContext.Provider
       value={{
@@ -314,8 +341,8 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
         messages: state.messages,
         loading: state.loading,
         messageIsStreaming: state.messageIsStreaming,
-        haveFirstResponse: state.haveFirstResponse,
-        haveSecondResponse: state.haveSecondResponse,
+        showDefaultPromt: state.showDefaultPromt,
+        showInputBar: state.showInputBar,
         setS3Path: s3PathHandler,
         setError: errorHandler,
         sendMessage: sendMessageHandler,
