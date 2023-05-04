@@ -27,6 +27,7 @@ const Chat = () => {
     showInputBar,
     createIndex,
     sendMessage,
+    sendInitialMessage,
   } = useChatContext();
 
   // Disable page until s3_file not avaiable
@@ -41,6 +42,13 @@ const Chat = () => {
       createIndex();
     }
   }, []);
+
+  // Trigger first initial message promt
+  useEffect(() => {
+    if (index) {
+      sendInitialMessage();
+    }
+  }, [index]);
 
   return (
     <div

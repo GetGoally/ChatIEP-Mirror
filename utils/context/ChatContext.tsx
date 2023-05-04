@@ -25,6 +25,7 @@ interface ChatContextType {
   setError: (value: string) => void;
   sendMessage: (promt: string) => void;
   createIndex: () => void;
+  sendInitialMessage: () => void;
 }
 
 interface Props {
@@ -118,7 +119,7 @@ const chatReducer = (state: State, action: Action) => {
             : DEFAULT_PROMTS.includes(lastMessage?.content),
         // we need to hide default promts after user submit more then 2 promts
         showDefaultPromt:
-          userMessages.length >= 3 ? false : state.showDefaultPromt,
+          userMessages.length >= 2 ? false : state.showDefaultPromt,
       };
     }
     case ActionKind.SetLoading: {
@@ -187,10 +188,6 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
         dispatchAction({
           type: ActionKind.SetIndex,
           payload: response.index_name_space,
-        });
-        dispatchAction({
-          type: ActionKind.SetLoaded,
-          payload: null,
         });
       } else {
         throw new Error(CHAT_RESPONSE_ERROR_MESSAGE);
@@ -293,11 +290,9 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
             content: response.answer,
           },
         });
-
-        return true;
+      } else {
+        throw new Error(CHAT_RESPONSE_ERROR_MESSAGE);
       }
-
-      return false;
     } catch (error) {
       if (error instanceof Error) {
         dispatchAction({
@@ -305,8 +300,6 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
           payload: error.message,
         });
       }
-
-      return false;
     } finally {
       dispatchAction({
         type: ActionKind.SetLoading,
@@ -320,16 +313,54 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-    if (state.index) {
-      sendMessageHandler(FIRST_PROMT).then((res) => {
+  const sendInitialMessageHandler = async () => {
+    try {
+      const request = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/search?index_name_space=${state.index}&query=${FIRST_PROMT}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `${process.env.NEXT_PUBLIC_API_KEY}`,
+          },
+        },
+      );
+
+      if (!request.ok) {
+        throw new Error(CHAT_RESPONSE_ERROR_MESSAGE);
+      }
+
+      const response = await request.json();
+
+      if (response.status === CHAT_RESPONSE_STATUS_DONE) {
+        dispatchAction({
+          type: ActionKind.AddMessage,
+          payload: {
+            id: uuidv4(),
+            role: 'assistant',
+            content: `Based on this IEP, here are some of the things this student is struggling with:\n\n${response.answer}`,
+          },
+        });
         dispatchAction({
           type: ActionKind.ToggleDefaultPromt,
-          payload: res,
+          payload: true,
         });
+      } else {
+        throw new Error(CHAT_RESPONSE_ERROR_MESSAGE);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        dispatchAction({
+          type: ActionKind.SetError,
+          payload: error.message,
+        });
+      }
+    } finally {
+      dispatchAction({
+        type: ActionKind.SetLoaded,
+        payload: null,
       });
     }
-  }, [state.index]);
+  };
 
   return (
     <ChatContext.Provider
@@ -347,6 +378,7 @@ export const ChatContextProvider: React.FC<Props> = ({ children }) => {
         setError: errorHandler,
         sendMessage: sendMessageHandler,
         createIndex: createIndexHandler,
+        sendInitialMessage: sendInitialMessageHandler,
       }}
     >
       {children}
